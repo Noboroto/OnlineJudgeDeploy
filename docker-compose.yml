@@ -1,36 +1,34 @@
-version: "3"
 services:
-
   oj-redis:
     image: redis:6.0-alpine
     container_name: oj-redis
     restart: always
     volumes:
-      - $PWD/data/redis:/data
-      - "/etc/localtime:/etc/localtime:ro"
-      - "/etc/timezone:/etc/timezone:ro"
+      - redis_data:/data
+      - localtime:/etc/localtime:ro
+      - timezone:/etc/timezone:ro
   
   oj-postgres:
     image: postgres:10-alpine
     container_name: oj-postgres
     restart: always
     volumes:
-      - $PWD/data/postgres:/var/lib/postgresql/data
-      - "/etc/localtime:/etc/localtime:ro"
-      - "/etc/timezone:/etc/timezone:ro"
+      - postgres_data:/var/lib/postgresql/data
+      - localtime:/etc/localtime:ro
+      - timezone:/etc/timezone:ro
     environment:
-      - POSTGRES_DB=onlinejudge
-      - POSTGRES_USER=onlinejudge
-      - POSTGRES_PASSWORD=onlinejudge
+      - POSTGRES_DB=onlinejudgeSAB
+      - POSTGRES_USER=onlinejudgeSAB
+      - POSTGRES_PASSWORD=onlinejudgeSAB
 
   oj-forum:
     image: php:7.4-fpm-alpine
     container_name: oj-forum
     restart: always
     volumes:
-      - $PWD/data/forum:/forum
-      - "/etc/localtime:/etc/localtime:ro"
-      - "/etc/timezone:/etc/timezone:ro"
+      - forum_data:/forum
+      - localtime:/etc/localtime:ro
+      - timezone:/etc/timezone:ro
     
   judge-server:
     # image: registry.cn-hangzhou.aliyuncs.com/onlinejudge/judge_server
@@ -52,15 +50,15 @@ services:
     tmpfs:
       - /tmp
     volumes:
-      - $PWD/data/backend/test_case:/test_case:ro
-      - $PWD/data/judge_server/log:/log
-      - $PWD/data/judge_server/run:/judger
-      - "/etc/localtime:/etc/localtime:ro"
-      - "/etc/timezone:/etc/timezone:ro"
+      - backend_data/test_case:/test_case:ro
+      - judge_log:/log
+      - judge_run:/judger
+      - localtime:/etc/localtime:ro
+      - timezone:/etc/timezone:ro
     environment:
       - SERVICE_URL=http://judge-server:8080
       - BACKEND_URL=http://oj-backend:8000/api/judge_server_heartbeat/
-      - TOKEN=CHANGE_THIS
+      - TOKEN=SAB_JUDGER
       # - judger_debug=1
   
   oj-backend:
@@ -74,17 +72,75 @@ services:
       - judge-server
       - oj-forum
     volumes:
-      - $PWD/data/backend:/data
-      - $PWD/data/forum:/forum
-      - "/etc/localtime:/etc/localtime:ro"
-      - "/etc/timezone:/etc/timezone:ro"
+      - backend_data:/data
+      - forum_data:/forum
+      - localtime:/etc/localtime:ro
+      - timezone:/etc/timezone:ro
     environment:
-      - POSTGRES_DB=onlinejudge
-      - POSTGRES_USER=onlinejudge
-      - POSTGRES_PASSWORD=onlinejudge
-      - JUDGE_SERVER_TOKEN=CHANGE_THIS
-      # - FORCE_HTTPS=1
+      - POSTGRES_DB=onlinejudgeSAB
+      - POSTGRES_USER=onlinejudgeSAB
+      - POSTGRES_PASSWORD=onlinejudgeSAB
+      - JUDGE_SERVER_TOKEN=SAB_JUDGER
+      - FORCE_HTTPS=1
       # - STATIC_CDN_HOST=cdn.oj.com
     ports:
-      - "0.0.0.0:80:8000"
-      - "0.0.0.0:443:1443"
+      # - 8000:8000
+      - 8281:1443
+volume:
+  localtime:
+    name: judger_localtime
+    driver: local
+    driver_opts:
+      type: none
+      o: 'bind'
+      device: /etc/localtime
+  timezone:
+    name: judger_timezone
+    driver: local
+    driver_opts:
+      type: none
+      o: 'bind'
+      device: /etc/timezone
+  redis_data:
+    name: judger_redis_data
+    driver: local
+    driver_opts:
+      type: none
+      o: 'bind'
+      device: ./data/redis
+  postgres_data:
+    name: judger_postgres_data
+    driver: local
+    driver_opts:
+      type: none
+      o: 'bind'
+      device: ./data/postgres
+  forum_data:
+    name: judger_forum_data
+    driver: local
+    driver_opts:
+      type: none
+      o: 'bind'
+      device: ./data/forum
+  judge_log:
+    name: judger_judge_server_data
+    driver: local
+    driver_opts:
+      type: none
+      o: 'bind'
+      device: ./data/judge_server/log
+  judge_run:
+    name: judger_judge_server_run
+    driver: local
+    driver_opts:
+      type: none
+      o: 'bind'
+      device: ./data/judge_server/run
+  backend_data:
+    name: judger_backend_data
+    driver: local
+    driver_opts:
+      type: none
+      o: 'bind'
+      device: ./data/backend
+
