@@ -15,9 +15,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - etc_data:/etc:ro
     environment:
-      - POSTGRES_DB=onlinejudgeSAB
-      - POSTGRES_USER=onlinejudgeSAB
-      - POSTGRES_PASSWORD=onlinejudgeSAB
+      - POSTGRES_DB=onlinejudgesab
+      - POSTGRES_USER=onlinejudgesab
+      - POSTGRES_PASSWORD=onlinejudgesab
 
   oj-forum:
     image: php:7.4-fpm-alpine
@@ -72,9 +72,9 @@ services:
       - forum_data:/forum
       - etc_data:/etc:ro
     environment:
-      - POSTGRES_DB=onlinejudgeSAB
-      - POSTGRES_USER=onlinejudgeSAB
-      - POSTGRES_PASSWORD=onlinejudgeSAB
+      - POSTGRES_DB=onlinejudgesab
+      - POSTGRES_USER=onlinejudgesab
+      - POSTGRES_PASSWORD=onlinejudgesab
       - JUDGE_SERVER_TOKEN=SAB_JUDGER
       - FORCE_HTTPS=1
       # - STATIC_CDN_HOST=cdn.oj.com
