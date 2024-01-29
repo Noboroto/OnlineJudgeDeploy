@@ -50,7 +50,7 @@ services:
     tmpfs:
       - /tmp
     volumes:
-      - backend_data/test_case:/test_case:ro
+      - judger_test_case:/test_case:ro
       - judge_log:/log
       - judge_run:/judger
       - localtime:/etc/localtime:ro
@@ -107,47 +107,47 @@ volumes:
     driver_opts:
       type: none
       o: 'bind'
-      device: ./data/redis
+      device: /home/david0403/volumes/OnlineJudgeDeploydata/redis
   postgres_data:
     name: judger_postgres_data
     driver: local
     driver_opts:
       type: none
       o: 'bind'
-      device: ./data/postgres
+      device: /home/david0403/volumes/OnlineJudgeDeploydata/postgres
   forum_data:
     name: judger_forum_data
     driver: local
     driver_opts:
       type: none
       o: 'bind'
-      device: ./data/forum
+      device: /home/david0403/volumes/OnlineJudgeDeploydata/forum
   judge_log:
     name: judger_judge_server_data
     driver: local
     driver_opts:
       type: none
       o: 'bind'
-      device: ./data/judge_server/log
+      device: /home/david0403/volumes/OnlineJudgeDeploydata/judge_server/log
   judge_run:
     name: judger_judge_server_run
     driver: local
     driver_opts:
       type: none
       o: 'bind'
-      device: ./data/judge_server/run
+      device: /home/david0403/volumes/OnlineJudgeDeploydata/judge_server/run
   backend_data:
     name: judger_backend_data
     driver: local
     driver_opts:
       type: none
       o: 'bind'
-      device: ./data/backend
+      device: /home/david0403/volumes/OnlineJudgeDeploydata/backend
   test_case:
     name: judger_test_case
     driver: local
     driver_opts:
       type: none
       o: 'bind'
-      device: ./data/backend/test_case
+      device: /home/david0403/volumes/OnlineJudgeDeploydata/backend/test_case
 
