@@ -111,14 +111,14 @@ volumes:
       o: 'bind'
       device: /home/david0403/volumes/OnlineJudgeDeploydata/forum
   judge_log:
-    name: judger_judge_server_data
+    name: judger_server_data
     driver: local
     driver_opts:
       type: none
       o: 'bind'
       device: /home/david0403/volumes/OnlineJudgeDeploydata/judge_server/log
   judge_run:
-    name: judger_judge_server_run
+    name: judge_server_run
     driver: local
     driver_opts:
       type: none
