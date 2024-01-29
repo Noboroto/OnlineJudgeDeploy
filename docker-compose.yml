@@ -2,7 +2,7 @@ services:
   oj-redis:
     image: redis:6.0-alpine
     container_name: oj-redis
-    restart: always
+    restart: unless-stopped
     volumes:
       - redis_data:/data
       - etc_data:/etc:ro
@@ -10,7 +10,7 @@ services:
   oj-postgres:
     image: postgres:10-alpine
     container_name: oj-postgres
-    restart: always
+    restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - etc_data:/etc:ro
@@ -22,7 +22,7 @@ services:
   oj-forum:
     image: php:7.4-fpm-alpine
     container_name: oj-forum
-    restart: always
+    restart: unless-stopped
     volumes:
       - forum_data:/forum
       - etc_data:/etc:ro
@@ -35,7 +35,7 @@ services:
     image: luyencode/judge-server
     # 稳定版镜像
     container_name: judge-server
-    restart: always
+    restart: unless-stopped
     read_only: true
     cap_drop:
       - SETPCAP
@@ -61,7 +61,7 @@ services:
     #image: registry.cn-qingdao.aliyuncs.com/wenjian_oj/backend
     image: luyencode/oj-backend
     container_name: oj-backend
-    restart: always
+    restart: unless-stopped
     depends_on:
       - oj-redis
       - oj-postgres
