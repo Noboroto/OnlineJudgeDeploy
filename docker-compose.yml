@@ -5,8 +5,7 @@ services:
     restart: always
     volumes:
       - redis_data:/data
-      - localtime:/etc/localtime:ro
-      - timezone:/etc/timezone:ro
+      - etc_data:/etc:ro
   
   oj-postgres:
     image: postgres:10-alpine
@@ -14,8 +13,7 @@ services:
     restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - localtime:/etc/localtime:ro
-      - timezone:/etc/timezone:ro
+      - etc_data:/etc:ro
     environment:
       - POSTGRES_DB=onlinejudgeSAB
       - POSTGRES_USER=onlinejudgeSAB
@@ -27,8 +25,7 @@ services:
     restart: always
     volumes:
       - forum_data:/forum
-      - localtime:/etc/localtime:ro
-      - timezone:/etc/timezone:ro
+      - etc_data:/etc:ro
     
   judge-server:
     # image: registry.cn-hangzhou.aliyuncs.com/onlinejudge/judge_server
@@ -53,8 +50,7 @@ services:
       - test_case_data:/test_case:ro
       - judge_log:/log
       - judge_run:/judger
-      - localtime:/etc/localtime:ro
-      - timezone:/etc/timezone:ro
+      - etc_data:/etc:ro
     environment:
       - SERVICE_URL=http://judge-server:8080
       - BACKEND_URL=http://oj-backend:8000/api/judge_server_heartbeat/
@@ -74,8 +70,7 @@ services:
     volumes:
       - backend_data:/data
       - forum_data:/forum
-      - localtime:/etc/localtime:ro
-      - timezone:/etc/timezone:ro
+      - etc_data:/etc:ro
     environment:
       - POSTGRES_DB=onlinejudgeSAB
       - POSTGRES_USER=onlinejudgeSAB
@@ -87,20 +82,13 @@ services:
       # - 8000:8000
       - 8281:1443
 volumes:
-  localtime:
-    name: judger_localtime
+  etc_data:
+    name: judger_etc_data
     driver: local
     driver_opts:
       type: none
       o: 'bind'
-      device: /etc/localtime
-  timezone:
-    name: judger_timezone
-    driver: local
-    driver_opts:
-      type: none
-      o: 'bind'
-      device: /etc/timezone
+      device: /etc
   redis_data:
     name: judger_redis_data
     driver: local
