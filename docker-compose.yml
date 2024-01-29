@@ -4,18 +4,18 @@ services:
   oj-redis:
     image: redis:6.0-alpine
     container_name: oj-redis
-    restart: on-failure:5
+    restart: always
     volumes:
-      - ./data/redis:/data
+      - $PWD/data/redis:/data
       - "/etc/localtime:/etc/localtime:ro"
       - "/etc/timezone:/etc/timezone:ro"
   
   oj-postgres:
     image: postgres:10-alpine
     container_name: oj-postgres
-    restart: on-failure:5
+    restart: always
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
+      - $PWD/data/postgres:/var/lib/postgresql/data
       - "/etc/localtime:/etc/localtime:ro"
       - "/etc/timezone:/etc/timezone:ro"
     environment:
@@ -26,9 +26,9 @@ services:
   oj-forum:
     image: php:7.4-fpm-alpine
     container_name: oj-forum
-    restart: on-failure:5
+    restart: always
     volumes:
-      - ./data/forum:/forum
+      - $PWD/data/forum:/forum
       - "/etc/localtime:/etc/localtime:ro"
       - "/etc/timezone:/etc/timezone:ro"
     
@@ -40,7 +40,7 @@ services:
     image: luyencode/judge-server
     # 稳定版镜像
     container_name: judge-server
-    restart: on-failure:5
+    restart: always
     read_only: true
     cap_drop:
       - SETPCAP
@@ -52,9 +52,9 @@ services:
     tmpfs:
       - /tmp
     volumes:
-      - ./data/backend/test_case:/test_case:ro
-      - ./data/judge_server/log:/log
-      - ./data/judge_server/run:/judger
+      - $PWD/data/backend/test_case:/test_case:ro
+      - $PWD/data/judge_server/log:/log
+      - $PWD/data/judge_server/run:/judger
       - "/etc/localtime:/etc/localtime:ro"
       - "/etc/timezone:/etc/timezone:ro"
     environment:
@@ -67,82 +67,24 @@ services:
     #image: registry.cn-qingdao.aliyuncs.com/wenjian_oj/backend
     image: luyencode/oj-backend
     container_name: oj-backend
-    restart: on-failure:5
+    restart: always
     depends_on:
       - oj-redis
       - oj-postgres
       - judge-server
       - oj-forum
     volumes:
-      - ./data/backend:/data
-      - ./data/forum:/forum
+      - $PWD/data/backend:/data
+      - $PWD/data/forum:/forum
       - "/etc/localtime:/etc/localtime:ro"
       - "/etc/timezone:/etc/timezone:ro"
     environment:
-      - POSTGRES_DB=onlinejudgesab
-      - POSTGRES_USER=onlinejudgesab
-      - POSTGRES_PASSWORD=onlinejudgesab
-      - JUDGE_SERVER_TOKEN=SAB_JUDGER
+      - POSTGRES_DB=onlinejudge
+      - POSTGRES_USER=onlinejudge
+      - POSTGRES_PASSWORD=onlinejudge
+      - JUDGE_SERVER_TOKEN=CHANGE_THIS
       # - FORCE_HTTPS=1
       # - STATIC_CDN_HOST=cdn.oj.com
     ports:
-      # - 8000:8000
+      #- "0.0.0.0:80:8000"
       - 8281:1443
-volumes:
-  etc_data:
-    name: judger_etc_data
-    driver: local
-    driver_opts:
-      type: none
-      o: 'bind'
-      device: /etc
-  redis_data:
-    name: judger_redis_data
-    driver: local
-    driver_opts:
-      type: none
-      o: 'bind'
-      device: /home/david0403/volumes/OnlineJudgeDeploydata/redis
-  postgres_data:
-    name: judger_postgres_data
-    driver: local
-    driver_opts:
-      type: none
-      o: 'bind'
-      device: /home/david0403/volumes/OnlineJudgeDeploydata/postgres
-  forum_data:
-    name: judger_forum_data
-    driver: local
-    driver_opts:
-      type: none
-      o: 'bind'
-      device: /home/david0403/volumes/OnlineJudgeDeploydata/forum
-  judge_log:
-    name: judger_server_data
-    driver: local
-    driver_opts:
-      type: none
-      o: 'bind'
-      device: /home/david0403/volumes/OnlineJudgeDeploydata/judge_server/log
-  judge_run:
-    name: judge_server_run
-    driver: local
-    driver_opts:
-      type: none
-      o: 'bind'
-      device: /home/david0403/volumes/OnlineJudgeDeploydata/judge_server/run
-  backend_data:
-    name: judger_backend_data
-    driver: local
-    driver_opts:
-      type: none
-      o: 'bind'
-      device: /home/david0403/volumes/OnlineJudgeDeploydata/backend
-  test_case_data:
-    name: judger_test_case
-    driver: local
-    driver_opts:
-      type: none
-      o: 'bind'
-      device: /home/david0403/volumes/OnlineJudgeDeploydata/backend/test_case
-
