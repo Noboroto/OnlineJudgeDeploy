@@ -50,7 +50,7 @@ services:
     tmpfs:
       - /tmp
     volumes:
-      - judger_test_case:/test_case:ro
+      - test_case_data:/test_case:ro
       - judge_log:/log
       - judge_run:/judger
       - localtime:/etc/localtime:ro
@@ -143,7 +143,7 @@ volumes:
       type: none
       o: 'bind'
       device: /home/david0403/volumes/OnlineJudgeDeploydata/backend
-  test_case:
+  test_case_data:
     name: judger_test_case
     driver: local
     driver_opts:
