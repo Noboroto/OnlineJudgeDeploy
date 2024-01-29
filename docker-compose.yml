@@ -143,4 +143,11 @@ volumes:
       type: none
       o: 'bind'
       device: ./data/backend
+  test_case:
+    name: judger_test_case
+    driver: local
+    driver_opts:
+      type: none
+      o: 'bind'
+      device: ./data/backend/test_case
 
