@@ -86,7 +86,7 @@ services:
     ports:
       # - 8000:8000
       - 8281:1443
-volume:
+volumes:
   localtime:
     name: judger_localtime
     driver: local
